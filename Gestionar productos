@@ -1,0 +1,220 @@
+   // Variable para controlar la continuación del bucle principal
+            bool continuar = true;
+            while (continuar)
+            {
+                // Limpieza de la consola para una nueva visualización del menú
+                Console.Clear();
+                // Presentación del menú principal al usuario
+                Console.WriteLine("=============================================");
+                Console.WriteLine("||   Sistema de Inventario 'Mi Tiendita'   ||");
+                Console.WriteLine("=============================================");
+                Console.WriteLine("|| 1. Gestionar Productos                  ||");
+                Console.WriteLine("|| 2. Gestionar Almacenes                  ||");
+                Console.WriteLine("|| 3. Agregar y Extraer Productos          ||");
+                Console.WriteLine("|| 4. Salir                                ||");
+                Console.WriteLine("=============================================");
+                Console.WriteLine("Seleccione una opción y presione Enter:");
+
+                // Captura de la elección del usuario
+                string opcion = Console.ReadLine();
+                // Estructura de decisión que dirige al usuario al submenú correspondiente
+                switch (opcion)
+                {
+                    case "1":
+                        GestionarProductos();
+                        break;
+                    case "2":
+                        GestionarAlmacenes();
+                        break;
+                    case "3":
+                        AgregarYExtraerProductos();
+                        break;
+                    case "4":
+                        continuar = false; // Salir del programa
+                        break;
+                    default:
+                        Console.WriteLine("Opción inválida. Intente de nuevo.");
+                        Console.ReadKey(); // Esperar a que el usuario reconozca el mensaje antes de continuar
+                        break;
+                }
+            }
+        }
+
+        // Método que muestra y maneja las operaciones relacionadas con los productos
+        static void GestionarProductos()
+        {
+            // Controla el regreso al menú principal
+            bool volver = false;
+            while (!volver)
+            {
+                // Limpieza de la consola y presentación del menú de gestión de productos
+                Console.Clear();
+                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("||    Gestionar Productos - Mi Tiendita    ||");
+                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("|| 1. Agregar Producto                     ||");
+                Console.WriteLine("|| 2. Eliminar Producto                    ||");
+                Console.WriteLine("|| 3. Modificar Producto                   ||");
+                Console.WriteLine("|| 4. Mostrar Inventario                   ||");
+                Console.WriteLine("|| 5. Volver al Menú Principal             ||");
+                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("Seleccione una opción:");
+
+                // Captura de la elección del usuario para el submenú de productos
+                string opcion = Console.ReadLine();
+                // Estructura de decisión que invoca el método correspondiente basado en la elección del usuario
+                switch (opcion)
+                {
+                    // Caso para agregar un nuevo producto al inventario
+                    case "1":
+                        AgregarProducto();
+                        break;
+                    // Caso para eliminar un producto existente
+                    case "2":
+                        EliminarProducto();
+                        break;
+                    // Caso para modificar un producto existente
+                    case "3":
+                        ModificarProducto();
+                        break;
+                    // Caso para mostrar todos los productos en el inventario
+                    case "4":
+                        MostrarInventario();
+                        break;
+                    // Caso para volver al menú principal
+                    case "5":
+                        volver = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opción inválida. Intente de nuevo.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        // Método para agregar un nuevo producto al inventario
+        static void AgregarProducto()
+        {
+            // Instrucciones en consola y captura del nombre del producto
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Agregar Producto ===");
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("Ingrese el nombre del producto:");
+            string nombre = Console.ReadLine();
+
+            // Instrucciones en consola y captura del precio del producto
+            Console.WriteLine("Ingrese el precio del producto:");
+            // Intenta convertir el texto ingresado en un valor decimal para el precio
+            if (!decimal.TryParse(Console.ReadLine(), out decimal precio))
+            {
+                Console.WriteLine("Precio inválido.");
+                Console.ReadKey();
+                return; // Termina el método si el precio es inválido
+            }
+
+            // Instrucciones en consola y captura de la cantidad del producto
+            Console.WriteLine("Ingrese la cantidad del producto:");
+            // Intenta convertir el texto ingresado en un valor entero para la cantidad
+            if (!int.TryParse(Console.ReadLine(), out int cantidad) || cantidad < 0)
+            {
+                Console.WriteLine("Cantidad inválida.");
+                Console.ReadKey();
+                return; // Termina el método si la cantidad es inválida
+            }
+
+            // Crea un nuevo producto con los datos ingresados y lo agrega al inventario
+            Producto nuevoProducto = new Producto(nombre, precio, cantidad);
+            inventario.Add(nuevoProducto);
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("Producto agregado exitosamente.");
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
+
+        // Método para eliminar un producto del inventario
+        static void EliminarProducto()
+        {
+            // Instrucciones en consola y captura del nombre del producto a eliminar
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Eliminar Producto ===");
+            Console.WriteLine("---------------------------------------");
+            Console.WriteLine("Ingrese el nombre del producto a eliminar:");
+            string nombre = Console.ReadLine();
+
+            // Busca el producto en el inventario usando Linq y lo elimina si existe
+            Producto productoAEliminar = inventario.FirstOrDefault(p => p.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
+            if (productoAEliminar != null)
+            {
+                inventario.Remove(productoAEliminar);
+                Console.WriteLine("--------------------------------");
+                Console.WriteLine("Producto eliminado exitosamente.");
+            }
+            else
+            {
+                Console.WriteLine("Producto no encontrado."); // Mensaje si el producto no se encuentra
+            }
+
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
+
+        // Método para modificar un producto existente en el inventario
+        static void ModificarProducto()
+        {
+            // Instrucciones en consola y captura del nombre del producto a modificar
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Modificar Producto ===");
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("Ingrese el nombre del producto a modificar:");
+            string nombre = Console.ReadLine();
+
+            // Busca el producto en el inventario usando Linq
+            Producto productoAModificar = inventario.FirstOrDefault(p => p.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
+            if (productoAModificar != null)
+            {
+                // Si el producto existe, solicita y actualiza el nuevo precio
+                Console.WriteLine("Ingrese el nuevo precio:");
+                if (!decimal.TryParse(Console.ReadLine(), out decimal nuevoPrecio))
+                {
+                    Console.WriteLine("Precio inválido.");
+                    Console.ReadKey();
+                    return; // Termina el método si el precio es inválido
+                }
+
+                // Solicita y actualiza la nueva cantidad
+                Console.WriteLine("Ingrese la nueva cantidad:");
+                if (!int.TryParse(Console.ReadLine(), out int nuevaCantidad) || nuevaCantidad < 0)
+                {
+                    Console.WriteLine("Cantidad inválida.");
+                    Console.ReadKey();
+                    return; // Termina el método si la cantidad es inválida
+                }
+
+                // Actualiza el producto con los nuevos valores
+                productoAModificar.Precio = nuevoPrecio;
+                productoAModificar.Cantidad = nuevaCantidad;
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("Producto modificado exitosamente.");
+            }
+            else
+            {
+                Console.WriteLine("Producto no encontrado."); // Mensaje si el producto no se encuentra
+            }
+
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
+
+        // Método para mostrar todos los productos en el inventario
+        static void MostrarInventario()
+        {
+            // Instrucciones en consola para mostrar el inventario
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Mostrar Inventario ===");
+            Console.WriteLine("----------------------------------------");
+            Console.WriteLine("Inventario Actual:");
+            // Itera a través de cada producto en el inventario y los muestra
+            foreach (Producto p in inventario)
+            {
+                Console.WriteLine($"Producto: {p.Nombre} - Precio: ${p.Precio} - Cantidad: {p.Cantidad}");
+            }
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
