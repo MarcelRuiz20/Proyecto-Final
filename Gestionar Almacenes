@@ -1,0 +1,119 @@
+// Método que muestra y maneja las operaciones relacionadas con los almacenes
+        static void GestionarAlmacenes()
+        {
+            // Controla el regreso al menú principal
+            bool volver = false;
+            while (!volver)
+            {
+                // Limpieza de la consola y presentación del menú de gestión de almacenes
+                Console.Clear();
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("||   Gestionar Almacenes - Mi Tiendita   ||");
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("|| 1. Agregar Almacén                    ||");
+                Console.WriteLine("|| 2. Eliminar Almacén                   ||");
+                Console.WriteLine("|| 3. Mostrar Almacenes                  ||");
+                Console.WriteLine("|| 4. Volver al Menú Principal           ||");
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("Seleccione una opción:");
+
+                // Captura de la elección del usuario para el submenú de almacenes
+                string opcion = Console.ReadLine();
+                // Estructura de decisión que invoca el método correspondiente basado en la elección del usuario
+                switch (opcion)
+                {
+                    // Caso para agregar un nuevo almacén
+                    case "1":
+                        AgregarAlmacen();
+                        break;
+                    // Caso para eliminar un almacén existente
+                    case "2":
+                        EliminarAlmacen();
+                        break;
+                    // Caso para mostrar todos los almacenes
+                    case "3":
+                        MostrarAlmacenes();
+                        break;
+                    // Caso para volver al menú principal
+                    case "4":
+                        volver = true;
+                        break;
+                    default:
+                        Console.WriteLine("Opción inválida. Intente de nuevo.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        // Método para agregar un nuevo almacén a la lista de almacenes
+        static void AgregarAlmacen()
+        {
+            // Instrucciones en consola y captura del nombre del nuevo almacén
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Agregar Almacén ===");
+            Console.WriteLine("-------------------------------------");
+            Console.WriteLine("Ingrese el nombre del nuevo almacén:");
+            string nombre = Console.ReadLine();
+
+            // Verifica si ya existe un almacén con el mismo nombre
+            var existe = almacenes.Any(a => a.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
+            if (!existe)
+            {
+                // Crea un nuevo almacén y lo agrega a la lista si no existe
+                Almacen nuevoAlmacen = new Almacen(nombre);
+                almacenes.Add(nuevoAlmacen);
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("Almacén agregado exitosamente.");
+            }
+            else
+            {
+                // Mensaje si el almacén ya existe
+                Console.WriteLine("Un almacén con ese nombre ya existe.");
+            }
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
+
+        // Método para eliminar un almacén de la lista de almacenes
+        static void EliminarAlmacen()
+        {
+            // Instrucciones en consola y captura del nombre del almacén a eliminar
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Eliminar Almacén ===");
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("Ingrese el nombre del almacén a eliminar:");
+            string nombre = Console.ReadLine();
+
+            // Busca el almacén en la lista usando Linq y lo elimina si existe
+            Almacen almacenAEliminar = almacenes.FirstOrDefault(a => a.Nombre.Equals(nombre, StringComparison.OrdinalIgnoreCase));
+            if (almacenAEliminar != null)
+            {
+                almacenes.Remove(almacenAEliminar);
+                Console.WriteLine("-------------------------------------------");
+                Console.WriteLine("Almacén eliminado exitosamente.");
+            }
+            else
+            {
+                // Mensaje si el almacén no se encuentra
+                Console.WriteLine("Almacén no encontrado.");
+            }
+
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
+
+        // Método para mostrar todos los almacenes y su información
+        static void MostrarAlmacenes()
+        {
+            // Instrucciones en consola para mostrar los almacenes
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Mostrar Almacenes ===");
+            Console.WriteLine("---------------------------------------");
+            Console.WriteLine("Lista de Almacenes:");
+            // Itera a través de cada almacén en la lista y los muestra
+            foreach (Almacen a in almacenes)
+            {
+                Console.WriteLine($"Almacén: {a.Nombre}");
+                // Se podría añadir la visualización del stock llamando al método MostrarStock del almacén
+            }
+            Console.ReadKey(); // Espera a que el usuario presione una tecla antes de continuar
+        }
