@@ -1,0 +1,169 @@
+static void AgregarYExtraerProductos()
+        {
+            bool volver = false;
+            while (!volver)
+            {
+                // Limpieza de la consola y presentación del menú para agregar y extraer productos
+                Console.Clear();
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("||  Agregar y Extraer Productos - Mi Tiendita  ||");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("|| 1. Ingresar Producto en Almacén             ||");
+                Console.WriteLine("|| 2. Extraer Producto de Almacén              ||");
+                Console.WriteLine("|| 3. Ver Stock Actual                         ||");
+                Console.WriteLine("|| 4. Volver al Menú Principal                 ||");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("Seleccione una opción:");
+
+                // Captura de la elección del usuario para agregar o extraer productos
+                string opcion = Console.ReadLine();
+                switch (opcion)
+                {
+                    case "1":
+                        IngresarProductoEnAlmacen();
+                        break;
+                    case "2":
+                        ExtraerProductoDeAlmacen();
+                        break;
+                    case "3":
+                        VerStockActual();
+                        break;
+                    case "4":
+                        volver = true; // Regresa al menú principal
+                        break;
+                    default:
+                        Console.WriteLine("Opción inválida. Intente de nuevo.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        // Permite al usuario agregar un producto a un almacén específico
+        static void IngresarProductoEnAlmacen()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Ingresar Producto en Almacén ===");
+            Console.WriteLine("--------------------------------------------------");
+            Almacen almacenSeleccionado = SeleccionarAlmacen();
+            if (almacenSeleccionado == null) return;
+
+            Producto productoSeleccionado = SeleccionarProducto();
+            if (productoSeleccionado == null) return;
+
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("Ingrese la cantidad a ingresar:");
+            if (!int.TryParse(Console.ReadLine(), out int cantidad) || cantidad <= 0)
+            {
+                Console.WriteLine("Cantidad inválida.");
+                Console.ReadKey();
+                return;
+            }
+
+            // Agrega el producto y la cantidad especificada al stock del almacén seleccionado
+            almacenSeleccionado.AgregarProducto(productoSeleccionado, cantidad);
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("Producto ingresado en el almacén exitosamente.");
+            Console.ReadKey();
+        }
+
+        // Permite al usuario extraer un producto de un almacén específico
+        static void ExtraerProductoDeAlmacen()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Extraer Producto de Almacén ===");
+            Console.WriteLine("--------------------------------------------------");
+            Almacen almacenSeleccionado = SeleccionarAlmacen();
+            if (almacenSeleccionado == null) return;
+
+            Producto productoSeleccionado = SeleccionarProducto();
+            if (productoSeleccionado == null) return;
+
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("Ingrese la cantidad a extraer:");
+            if (!int.TryParse(Console.ReadLine(), out int cantidad) || cantidad <= 0)
+            {
+                Console.WriteLine("Cantidad inválida.");
+                Console.ReadKey();
+                return;
+            }
+
+            // Extrae la cantidad especificada del producto del stock del almacén seleccionado
+            almacenSeleccionado.ExtraerProducto(productoSeleccionado, cantidad);
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("Producto extraído del almacén exitosamente.");
+            Console.ReadKey();
+        }
+
+        // Muestra el stock actual de todos los almacenes
+        static void VerStockActual()
+        {
+            Console.Clear();
+            Console.WriteLine("=== Pantalla para Ver Stock Actual ===");
+            Console.WriteLine("--------------------------------------");
+            if (!almacenes.Any())
+            {
+                Console.WriteLine("No hay almacenes para mostrar.");
+            }
+            else
+            {
+                foreach (Almacen almacen in almacenes)
+                {
+                    Console.WriteLine($"Stock del Almacén '{almacen.Nombre}':");
+                    almacen.MostrarStock();
+                }
+            }
+            Console.ReadKey();
+        }
+// Auxiliar para seleccionar un almacén de la lista
+        static Almacen SeleccionarAlmacen()
+        {
+            ListarAlmacenes();
+            Console.Write("Seleccione el almacén: ");
+            string nombreAlmacen = Console.ReadLine();
+            Almacen almacenSeleccionado = almacenes.FirstOrDefault(a => a.Nombre.Equals(nombreAlmacen, StringComparison.OrdinalIgnoreCase));
+            if (almacenSeleccionado == null)
+            {
+                Console.WriteLine("Almacén no encontrado.");
+                Console.ReadKey();
+            }
+            return almacenSeleccionado;
+        }
+
+        // Auxiliar para seleccionar un producto del inventario
+        static Producto SeleccionarProducto()
+        {
+            ListarProductos();
+            Console.Write("Seleccione el producto: ");
+            string nombreProducto = Console.ReadLine();
+            Producto productoSeleccionado = inventario.FirstOrDefault(p => p.Nombre.Equals(nombreProducto, StringComparison.OrdinalIgnoreCase));
+            if (productoSeleccionado == null)
+            {
+                Console.WriteLine("Producto no encontrado.");
+                Console.ReadKey();
+            }
+            return productoSeleccionado;
+        }
+
+        // Muestra todos los almacenes disponibles
+        static void ListarAlmacenes()
+        {
+            Console.WriteLine("Almacenes disponibles:");
+            foreach (Almacen almacen in almacenes)
+            {
+                Console.WriteLine(almacen.Nombre);
+            }
+            Console.WriteLine("--------------------------------------------------");
+        }
+
+        // Muestra todos los productos disponibles en el inventario
+        static void ListarProductos()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Productos disponibles:");
+            foreach (Producto producto in inventario)
+            {
+                Console.WriteLine(producto.Nombre);
+            }
+            Console.WriteLine("--------------------------------------------------");
+        }
