@@ -1,0 +1,92 @@
+class Producto
+        {
+            public string Nombre { get; private set; }
+            public decimal Precio { get; set; }
+            public int Cantidad { get; set; }
+
+            public Producto(string nombre, decimal precio, int cantidad)
+            {
+                Nombre = nombre;
+                Precio = precio;
+                Cantidad = cantidad;
+            }
+        }
+
+        // Clase que define la estructura y comportamiento de los almacenes
+        class Almacen
+        {
+            public string Nombre { get; private set; }
+            public Dictionary<Producto, int> Stock { get; private set; }
+
+            public Almacen(string nombre)
+            {
+                Nombre = nombre;
+                Stock = new Dictionary<Producto, int>();
+            }
+
+            // Agrega productos al stock del almacén
+            public void AgregarProducto(Producto producto, int cantidad)
+            {
+                // Verifica que el producto exista en el inventario antes de agregarlo
+                if (!inventario.Contains(producto))
+                {
+                    Console.WriteLine("Producto no encontrado en el inventario.");
+                    return;
+                }
+
+                // Agrega o actualiza la cantidad del producto en el stock del almacén
+                if (Stock.ContainsKey(producto))
+                {
+                    Stock[producto] += cantidad;
+                }
+                else
+                {
+                    Stock.Add(producto, cantidad);
+                }
+                Console.WriteLine($"Producto {producto.Nombre} agregado al almacén {Nombre}.");
+            }
+
+            // Extrae productos del stock del almacén
+            public void ExtraerProducto(Producto producto, int cantidad)
+            {
+                // Verifica que el producto exista en el stock del almacén antes de extraerlo
+                if (!inventario.Contains(producto) || !Stock.ContainsKey(producto))
+                {
+                    Console.WriteLine("Producto no encontrado en el almacén.");
+                    return;
+                }
+
+                // Actualiza la cantidad del producto en el stock del almacén
+                if (Stock[producto] >= cantidad)
+                {
+                    Stock[producto] -= cantidad;
+                    // Si la cantidad llega a cero, elimina el producto del stock
+                    if (Stock[producto] == 0)
+                    {
+                        Stock.Remove(producto);
+                    }
+                    Console.WriteLine($"Producto {producto.Nombre} extraído del almacén {Nombre}.");
+                }
+                else
+                {
+                    Console.WriteLine("No hay suficiente stock para extraer.");
+                }
+            }
+
+            // Muestra el stock actual del almacén
+            public void MostrarStock()
+            {
+                // Si el almacén está vacío, muestra un mensaje correspondiente
+                if (Stock.Count == 0)
+                {
+                    Console.WriteLine("El almacén está vacío.");
+                    return;
+                }
+
+                // Muestra cada producto y su cantidad en el stock del almacén
+                foreach (var item in Stock)
+                {
+                    Console.WriteLine($"Producto: {item.Key.Nombre}, Cantidad: {item.Value}");
+                }
+            }
+        }
